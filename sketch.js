@@ -65,11 +65,16 @@ let grass = color(0, 215, 107);
 let orange1 = color(255, 115, 0);
 let slappy = color(252, 223, 116);
 
+function setup()
+{
+    angleMode(DEGREES);
+    createCanvas(800, 600);
+}
+
 function draw()
 {
     if (phase === "title")
     {
-        createCanvas(800, 600)
         background(0)
         textSize(80)
         fill(255)
@@ -253,6 +258,15 @@ function keyPressed() {
     lives = 5;
     originalVals();
   }
+  if(phase === "first world" && keyCode == space && jump === "no" && noDoubleJump === "off")
+  {
+    jump = "yes";
+    gravity *= -1;
+    jumpStart = slappyArray[1] + slappyArray[3];
+    jumpHeight = jumpStart + 150;
+    collideMarker = "fall";
+    noDoubleJump = "on";
+  }
 }
 
 function mousePressed()
@@ -271,7 +285,7 @@ function mousePressed()
         }
 
     }
-    if (phase === "level screen")
+    else if (phase === "level screen")
     {
         if (mouseX > 260 && mouseX < 360 && mouseY > 220 && mouseY < 260)
         {
@@ -282,6 +296,212 @@ function mousePressed()
         {
             gameLevel = "advanced";
             phase = "start";
+        }
+    }
+}
+
+function originalVals()
+{
+    startBlock = [80, 580, 140, 20];
+    //524
+    slappyArray = [106, 524, 64, 55];
+    slappyVel = [0,0];
+
+    poles = [
+            
+            [260, 540, 40, 500],
+            [380, 540, 40, 500],
+            [500, 540, 40, 500],
+            [620, 540, 40, 500],
+            [740, 540, 40, 500],
+            [860, 540, 40, 500],
+            [980, 540, 40, 500],
+            [1100, 540, 40, 500],
+
+        ];
+                    
+    spikesArray = [
+
+            [poles[0][0] + 60, 750, 40, 700],
+            [poles[1][0] + 60, 750, 40, 700],
+            [poles[2][0] + 60, 750, 40, 700],
+            [poles[3][0] + 60, 750, 40, 700],
+            [poles[4][0] + 60, 750, 40, 700],
+            [poles[5][0] + 60, 750, 40, 700],
+            [poles[6][0] + 60, 750, 40, 700],
+            [poles[7][0] + 60, 750, 40, 700],
+
+        ];
+
+    //ints 
+    gravity = 6;
+    speed = 3;
+    jumpHeight = 0;
+    jumpStart = 0;
+    speedUp = 0;
+    backMovementSpeed = 1;
+    previousPole = 0;
+    spikeUpNum = 0;
+    lives = 5;
+    lastBadPoleIndex = 0;
+    phaseNum = 1;
+    timePassed = 0;
+
+    //strings
+    startMove = "no";
+    jump = "no";
+    collideMarker = "fall";
+    noDoubleJump = "on";
+    phase = "title";
+    spikePresent = "no";
+    spikeUp = "stop";
+    subtractOnce = "no";
+    thinnerPoles = "yes";
+    redScreen = "off";
+    gameLevel = "none";
+
+}
+
+function drawPlayer(arr)
+{
+    fill(orange1);
+    strokeWeight(2);
+    line(arr[0] + 24, arr[1] + 48, arr[0] + 24, arr[1] + 55);
+    line(arr[0] + 37, arr[1] + 48, arr[0] + 37, arr[1] + 55);
+    fill(slappy);
+    ellipse(arr[0] + 14, arr[1] + 8, 40, 40);
+    translate(arr[0] + 34,arr[1] + 28)
+    rotate(60)
+    ellipse(arr[0] + 1, arr[1] + 22, 20, 10);
+    translate(arr[0] + 34,arr[1] + 28)
+    rotate(-40)
+    ellipse(arr[0] + 1, arr[1] + 18, 20, 10);
+    translate(arr[0] + 34,arr[1] + 28)
+    rotate(-20)
+    ellipse(arr[0] + 1, arr[1] + 21, 20, 10);
+    ellipse(arr[0] + 1, arr[1] + 31, 20, 10);
+    translate(arr[0] + 34,arr[1] + 28)
+    rotate(-20)
+    ellipse(arr[0] + 3, arr[1] + 34, 20, 10);
+    translate(arr[0] + 34,arr[1] + 28)
+    rotate(20)
+    fill(255)
+    ellipse(arr[0] + 26, arr[1] + 14, 20, 20);
+    fill(0);
+    ellipse(arr[0] + 33, arr[1] + 21, 6, 6);
+    fill(orange1);
+    ellipse(arr[0] + 46, arr[1] + 25, 18, 8);
+
+}
+
+function drawTopBar()
+{
+    textSize(20)
+    fill(255)
+    if (gameLevel === "beginner")
+        {
+            text("Phase: " + phaseNum + "/4", 40, 60); 
+        }
+        else if(gameLevel === "advanced")
+        {
+            text("Phase: " + phaseNum + "/5", 40, 60); 
+        }
+        text("♥ " + lives, 40, 90);
+}
+
+function gravityMod()
+{
+    slappyArray[1] += slappyVel[1];
+}
+
+function moveX()
+{
+    slappyVel[0] = speed;
+    if(keyIsDown(right))
+    {
+        slappyArray[0] += slappyVel[0];
+    }
+    if (keyIsDown(left))
+    {
+        slappyArray[0] -= slappyVel[0];
+    }
+
+}
+
+function jump()
+{
+    if(jumpStart > jumpHeight)
+    {
+        gravity *= -1;
+        jumpHeight = 0;
+        jumpStart = 0;
+        jump = "no";
+    }
+    if(jump === "yes")
+    {
+        jumpStart += 10;
+    }
+    if (collideMarker === "fall")
+    {
+        slappyVel[1] = gravity;
+    }
+}
+
+function poleDraw()
+{
+    fill(grass);
+    for(let i = 0; i < poles.length; i++)
+    {
+        rect(poles[i][0], poles[i][1], poles[i][2], poles[i][3]);
+    }
+    fill('red');
+    for (let i = 0; i < spikesArray.length; i++)
+    {
+        rect(spikesArray[i][0], spikesArray[i][1], spikesArray[i][2], spikesArray[i][3]);
+        
+        beginShape();
+        vertex(spikesArray[i][0], spikesArray[i][1]);
+        vertex(spikesArray[i][0], spikesArray[i][1] - 20);
+        vertex(spikesArray[i][0] + 10, spikesArray[i][1]);
+        vertex(spikesArray[i][0] + 20, spikesArray[i][1] - 20);
+        vertex(spikesArray[i][0] + 30, spikesArray[i][1]);
+        vertex(spikesArray[i][0] + 40, spikesArray[i][1] - 20);
+        vertex(spikesArray[i][0] + 40, spikesArray[i][1]);
+        endShape();
+    }
+
+}
+
+function poleGen()
+{
+    for(let i = 0; i < poles.length; i++)
+    {
+        if(i == 0)
+        {
+            previousPole = 580;
+        }
+        else
+        {
+            previousPole = poles[i-1][1];
+        }
+        let highOrLow = floor(random(1, 4));;
+        if((highOrLow == 1  || highOrLow == 2)&& poles[i][1] > 100)
+        {
+            poles[i][1] = (previousPole - 40);
+
+            if (poles[i][1] <= 100)
+            {
+                poles[i][1] = (previousPole + 40);
+            }
+        }
+        else if((highOrLow == 3) && poles[i][1] < 580)
+        {
+            poles[i][1] = (previousPole + 40);
+                
+            if (poles[i][1] >= 560)
+            {
+                poles[i][1] = (previousPole - 40);
+            }
         }
     }
 }
