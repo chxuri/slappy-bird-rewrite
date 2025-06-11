@@ -70,7 +70,8 @@ function setup()
     myOrange = color(255, 115, 0);
     slappy = color(252, 223, 116);
     createCanvas(800, 600);
-    angleMode(DEGREES);
+    //angleMode(DEGREES);
+    angleMode(RADIANS);
 }
 
 function draw()
@@ -358,7 +359,7 @@ function originalVals()
     jumpString = "no";
     collideMarker = "fall";
     noDoubleJump = "on";
-    phase = "title";
+    //phase = "title";
     spikePresent = "no";
     spikeUp = "stop";
     subtractOnce = "no";
@@ -370,55 +371,58 @@ function originalVals()
 
 function drawPlayer(arr)
 {
-    push(); // Save current drawing state
+    stroke(myOrange);
+    strokeWeight(2);
+    line(arr[0] + 24, arr[1] + 48, arr[0] + 24, arr[1] + 55);
+    line(arr[0] + 37, arr[1] + 48, arr[0] + 37, arr[1] + 55);
+    noStroke();
+    
+    fill(slappy);
+    ellipse(arr[0] + 14 + 20, arr[1] + 8 + 20, 40, 40);
+    
 
-  fill(myOrange);
-  strokeWeight(2);
-  line(arr[0] + 24, arr[1] + 48, arr[0] + 24, arr[1] + 55);
-  line(arr[0] + 37, arr[1] + 48, arr[0] + 37, arr[1] + 55);
+    push();
+    translate(arr[0] + 34, arr[1] + 28);
+    rotate(radians(60));
+    ellipse(-33 + 10, -6 + 5, 20, 10);
+    pop();
 
-  fill(slappy);
-  ellipse(arr[0] + 14, arr[1] + 8, 40, 40);
+    push();
+    translate(arr[0] + 34, arr[1] + 28);
+    rotate(radians(20));
+    ellipse(-33 + 10, -10 + 5, 20, 10);
+    pop();
 
-  push();
-  translate(arr[0] + 34, arr[1] + 28);
-  rotate(radians(60));
-  ellipse(1, 22, 20, 10);
-  pop();
+    push();
+    translate(arr[0] + 34, arr[1] + 28);
+    rotate(radians(0));
+    ellipse(-33 + 10, -7 + 5, 20, 10);
+    ellipse(-33 + 10, 3 + 5, 20, 10);
+    pop();
 
-  push();
-  translate(arr[0] + 34, arr[1] + 28);
-  rotate(radians(20));
-  ellipse(1, 18, 20, 10);
-  pop();
+    push();
+    translate(arr[0] + 34,arr[1] + 28);
+    rotate(radians(-20));
+    ellipse(-31 + 10, 6 + 5, 20, 10);
+    pop();
 
-  push();
-  translate(arr[0] + 34, arr[1] + 28);
-  rotate(radians(0));
-  ellipse(1, 21, 20, 10);
-  ellipse(1, 31, 20, 10);
-  pop();
+    push();
+    translate(arr[0] + 34,arr[1] + 28);
+    rotate(radians(0));
+    fill(255);
+    ellipse(-8 + 10, -14 + 10, 20, 20);
+    fill(0);
+    ellipse(-1 + 3, -7 + 3, 6, 6);
+    fill(myOrange);
+    ellipse(12 + 9, -3 + 4, 18, 8);
+    pop();
 
-  push();
-  translate(arr[0] + 34, arr[1] + 28);
-  rotate(radians(-20));
-  ellipse(3, 34, 20, 10);
-  pop();
 
-  push();
-  translate(arr[0] + 34, arr[1] + 28);
-  rotate(radians(20));
-  fill(255);
-  ellipse(-8, -14, 20, 20); // white of eye
-  fill(0);
-  ellipse(-1, -7, 6, 6); // pupil
-  pop();
 
-  fill(myOrange);
-  ellipse(arr[0] + 46, arr[1] + 25, 18, 8); // beak
 
-  pop(); // Restore drawing state
 
+
+ 
 }
 
 function drawTopBar()
