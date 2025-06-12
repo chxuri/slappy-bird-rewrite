@@ -52,6 +52,7 @@ let startMove = "no";
 let jumpString = "no";
 let collideMarker = "fall";
 let noDoubleJump = "on";
+let noSideJump = "on";
 let phase = "title";
 let spikePresent = "no";
 let spikeUp = "stop";
@@ -105,8 +106,8 @@ function draw()
         rect(420, 220, 100, 40);
         rect(600, 220, 100, 40);
         fill(0)
-        text("beginner", 435, 245);
-        text("advanced", 610, 245);
+        text("beginner", 433, 245);
+        text("advanced", 608, 245);
 
     }
     else if(phase === "start")
@@ -170,6 +171,7 @@ function draw()
         //movement
         jump();
         moveX();
+        
         
     }
     else if (phase === "lose")
@@ -251,6 +253,13 @@ function draw()
     }
 }
 
+function noDoubleJumping(thing)
+{
+    if(collide(slappyArray, thing))
+    {
+    
+    }
+}
 
 function keyPressed() 
 {
@@ -359,6 +368,7 @@ function originalVals()
     jumpString = "no";
     collideMarker = "fall";
     noDoubleJump = "on";
+    noSideJump = "on";
     //phase = "title";
     spikePresent = "no";
     spikeUp = "stop";
@@ -737,6 +747,8 @@ function thinPoles()
 
 function spikesRandomUp()
 {
+
+    /////WORK ON SPEEDUP HERE
     if ((gameLevel === "advanced" && speedUp > 30) || (gameLevel === "beginner" && speedUp > 20) && spikeUp === "stop")
     {
         let spikeGen = floor(random(1, 7));
@@ -822,15 +834,18 @@ function slappyOnPole()
 
 function stopFall(thing1, thing2)
 {
-    if(collide(thing1, thing2))
+    if(collideWithTop(thing1, thing2))
     {
         thing1[1] -= slappyVel[1];
         slappyVel[1] = 0;
         collideMarker = "stop";
         noDoubleJump = "off";
+    
+        
     }
-    else if (jumpString === "no" && collideMarker === "go")
+    else if (jumpString === "no" && collideMarker === "fall")
     {
+        noDoubleJump = "on";
         gravity = 6;
     }
 }
@@ -952,7 +967,7 @@ function noStickingBool(thing1, thing2)
 
 function collide(thing1, thing2)
 {
-    if(thing1[0]+thing1[2] <= thing2[0]           ||
+    if( thing1[0]+thing1[2] <= thing2[0]           ||
         thing1[0]           >= thing2[0]+thing2[2] ||
         thing1[1]+thing1[3] <= thing2[1]           ||
         thing1[1]           >= thing2[1]+thing2[3])
@@ -965,3 +980,21 @@ function collide(thing1, thing2)
     }
     
 }
+
+function collideWithTop(thing1, thing2)
+{
+    if( thing1[0] + thing1[2] <= thing2[0]              ||
+        thing1[0]             >= thing2[0] + thing2[2]  ||
+        thing1[1] + thing1[3] <= thing2[1]              ||
+        thing1[1] + thing1[3] > thing2[1] + 5)
+    {
+        return false;
+    }
+    else
+    {
+        return true;  
+    }
+}
+
+
+
